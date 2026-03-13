@@ -103,24 +103,24 @@ export default function Calendar({ value, onChange, minDate, maxDate }: Calendar
               <button
                 type="button"
                 onClick={prevMonth}
-                className="min-h-12 min-w-12 rounded-lg p-2 hover:bg-slate-100"
+                className="min-h-12 min-w-12 rounded-lg p-2 text-slate-900 hover:bg-slate-100"
               >
                 ←
               </button>
-              <span className="font-semibold">
+              <span className="font-semibold text-slate-900">
                 {monthNames[month]} {year}
               </span>
               <button
                 type="button"
                 onClick={nextMonth}
-                className="min-h-12 min-w-12 rounded-lg p-2 hover:bg-slate-100"
+                className="min-h-12 min-w-12 rounded-lg p-2 text-slate-900 hover:bg-slate-100"
               >
                 →
               </button>
             </div>
             <div className="grid grid-cols-7 gap-1 text-center">
               {['D', 'S', 'T', 'Q', 'Q', 'S', 'S'].map((d) => (
-                <div key={d} className="text-xs font-medium text-slate-500">
+                <div key={d} className="text-xs font-medium text-slate-700">
                   {d}
                 </div>
               ))}

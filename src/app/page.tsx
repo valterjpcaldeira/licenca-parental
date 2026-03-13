@@ -110,9 +110,7 @@ export default function Home() {
                     Remuneração bruta mensal da mãe (€)
                   </label>
                   <input
-                    type="number"
-                    min={0}
-                    inputMode="decimal"
+                    type="text" inputMode="decimal"
                     value={motherSalary}
                     onChange={(e) => setMotherSalary(Math.max(0, parseFloat(e.target.value) || 0))}
                     className="w-full min-h-12 rounded-xl border-2 border-slate-200 bg-white px-4 py-3 text-base text-slate-800 focus:border-pink-400 focus:outline-none focus:ring-2 focus:ring-pink-200"
@@ -123,9 +121,7 @@ export default function Home() {
                     Remuneração bruta mensal do pai (€)
                   </label>
                   <input
-                    type="number"
-                    min={0}
-                    inputMode="decimal"
+                    type="text" inputMode="decimal"
                     value={fatherSalary}
                     onChange={(e) => setFatherSalary(Math.max(0, parseFloat(e.target.value) || 0))}
                     className="w-full min-h-12 rounded-xl border-2 border-slate-200 bg-white px-4 py-3 text-base text-slate-800 focus:border-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-200"
@@ -235,9 +231,7 @@ export default function Home() {
                       Dias exclusivos da mãe (após os 42 obrigatórios)
                     </label>
                     <input
-                      type="number"
-                      min={0}
-                      max={exclusivePool}
+                      type="text"
                       inputMode="numeric"
                       value={motherExclusiveDays}
                       onChange={(e) => {
@@ -266,9 +260,7 @@ export default function Home() {
                       Dias exclusivos do pai
                     </label>
                     <input
-                      type="number"
-                      min={0}
-                      max={exclusivePool}
+                      type="text"
                       inputMode="numeric"
                       value={fatherExclusiveDays}
                       onChange={(e) => {
@@ -307,9 +299,7 @@ export default function Home() {
                   <div className="flex items-center gap-2">
                     <span className="text-base font-medium text-pink-700">Mãe:</span>
                     <input
-                      type="number"
-                      min={0}
-                      max={30}
+                      type="text"
                       inputMode="numeric"
                       value={sharedMotherDays}
                       onChange={(e) => {
@@ -324,9 +314,7 @@ export default function Home() {
                   <div className="flex items-center gap-2">
                     <span className="text-base font-medium text-blue-700">Pai:</span>
                     <input
-                      type="number"
-                      min={0}
-                      max={30}
+                      type="text"
                       inputMode="numeric"
                       value={sharedFatherDays}
                       onChange={(e) => {
