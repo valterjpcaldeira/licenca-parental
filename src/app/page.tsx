@@ -295,8 +295,8 @@ export default function Home() {
                 <label className="mb-2 block text-base font-semibold text-slate-800">
                   Licença partilhada (30 dias extra) — lei: dividir entre mãe e pai
                 </label>
-                <div className="flex flex-wrap items-center gap-4">
-                  <div className="flex items-center gap-2">
+                <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center">
+                  <div className="flex w-full items-center justify-between gap-2 sm:w-auto sm:justify-start">
                     <span className="text-base font-medium text-pink-700">Mãe:</span>
                     <input
                       type="text"
@@ -307,11 +307,11 @@ export default function Home() {
                         setSharedMotherDays(v);
                         setSharedFatherDays(RULES.SHARED_TOTAL - v);
                       }}
-                      className="min-h-12 min-w-16 rounded-xl border-2 border-slate-200 bg-white px-4 py-3 text-center text-base font-semibold text-slate-800 focus:border-pink-400 focus:outline-none focus:ring-2 focus:ring-pink-200"
+                      className="min-h-12 min-w-16 rounded-xl border-2 border-slate-200 bg-white px-4 py-3 text-center text-base font-semibold text-slate-800 focus:border-pink-400 focus:outline-none focus:ring-2 focus:ring-pink-200 sm:min-w-20"
                     />
                     <span className="text-base text-slate-600">dias</span>
                   </div>
-                  <div className="flex items-center gap-2">
+                  <div className="flex w-full items-center justify-between gap-2 sm:w-auto sm:justify-start">
                     <span className="text-base font-medium text-blue-700">Pai:</span>
                     <input
                       type="text"
@@ -322,7 +322,7 @@ export default function Home() {
                         setSharedFatherDays(v);
                         setSharedMotherDays(RULES.SHARED_TOTAL - v);
                       }}
-                      className="min-h-12 min-w-16 rounded-xl border-2 border-slate-200 bg-white px-4 py-3 text-center text-base font-semibold text-slate-800 focus:border-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-200"
+                      className="min-h-12 min-w-16 rounded-xl border-2 border-slate-200 bg-white px-4 py-3 text-center text-base font-semibold text-slate-800 focus:border-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-200 sm:min-w-20"
                     />
                     <span className="text-base text-slate-600">dias</span>
                   </div>
