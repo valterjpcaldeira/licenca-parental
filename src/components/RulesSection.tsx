@@ -57,6 +57,13 @@ export default function RulesSection() {
             </div>
 
             <div>
+              <h3 className="mb-2 font-semibold text-slate-800">Gémeos (nascimento múltiplo)</h3>
+              <p>
+                Em caso de nascimento de gémeos (ou outros nascimentos múltiplos), a licença parental inicial é acrescida de <strong>30 dias por cada bebé além do primeiro</strong>. Neste simulador, a opção de gémeos acrescenta 30 dias totais (15 dias para cada progenitor).
+              </p>
+            </div>
+
+            <div>
               <h3 className="mb-2 font-semibold text-slate-800">Subsídio (remuneração de referência)</h3>
               <ul className="list-inside list-disc space-y-1">
                 <li><strong>120 dias:</strong> 100%</li>

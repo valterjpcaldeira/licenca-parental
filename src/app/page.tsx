@@ -22,6 +22,7 @@ export default function Home() {
   const [birthDate, setBirthDate] = useState(defaultBirthDate);
   const [initialDays, setInitialDays] = useState<InitialDaysOption>(150);
   const [withExtra, setWithExtra] = useState(true);
+  const [hasTwins, setHasTwins] = useState(false);
   const [whoTakesFirst, setWhoTakesFirst] = useState<'mother' | 'father'>('mother');
   const [motherSalary, setMotherSalary] = useState<number>(1500);
   const [fatherSalary, setFatherSalary] = useState<number>(1500);
@@ -31,7 +32,7 @@ export default function Home() {
   const [sharedFatherDays, setSharedFatherDays] = useState<number>(RULES.SHARED_DEFAULT_FATHER);
 
   const exclusivePool = getExclusivePool(initialDays);
-  const totalDaysLabel = getTotalDays(initialDays, withExtra);
+  const totalDaysLabel = getTotalDays(initialDays, withExtra, hasTwins);
 
   const periods = useMemo(
     () =>
@@ -39,6 +40,7 @@ export default function Home() {
         birthDate,
         initialDays,
         withExtra,
+        hasTwins,
         motherExclusiveDays,
         fatherExclusiveDays,
         sharedMotherDays,
@@ -49,6 +51,7 @@ export default function Home() {
       birthDate,
       initialDays,
       withExtra,
+      hasTwins,
       motherExclusiveDays,
       fatherExclusiveDays,
       sharedMotherDays,
@@ -63,7 +66,9 @@ export default function Home() {
 
   const totalShared = sharedMotherDays + sharedFatherDays;
   const sharedValid = totalShared === 30;
-  const canUseExtra = motherExclusiveDays >= 30 && fatherExclusiveDays >= 30;
+  const specialCaseMother108 =
+    initialDays === 150 && motherExclusiveDays === exclusivePool && fatherExclusiveDays === 0;
+  const canUseExtra = specialCaseMother108 || (motherExclusiveDays >= 30 && fatherExclusiveDays >= 30);
 
   const handleInitialDaysChange = (value: InitialDaysOption) => {
     setInitialDays(value);
@@ -102,6 +107,23 @@ export default function Home() {
                   Data prevista do parto
                 </label>
                 <Calendar value={birthDate} onChange={setBirthDate} />
+              </div>
+
+              <div className="rounded-xl border-2 border-slate-200 bg-slate-50 p-4">
+                <label className="flex min-h-12 cursor-pointer items-start gap-3 py-1">
+                  <input
+                    type="checkbox"
+                    checked={hasTwins}
+                    onChange={(e) => setHasTwins(e.target.checked)}
+                    className="mt-1.5 h-5 w-5 shrink-0 rounded text-violet-600"
+                  />
+                  <span className="text-base font-semibold text-slate-800">
+                    Nascimento múltiplo (gémeos)
+                  </span>
+                </label>
+                <p className="ml-8 text-sm text-slate-600">
+                  Em caso de gémeos, a licença parental inicial é acrescida de 30 dias (15 dias para cada progenitor neste simulador).
+                </p>
               </div>
 
               <div className="grid gap-4 sm:grid-cols-2">
@@ -173,8 +195,14 @@ export default function Home() {
                         setSharedMotherDays(0);
                         setSharedFatherDays(0);
                       } else {
-                        setSharedMotherDays(RULES.SHARED_DEFAULT_MOTHER);
-                        setSharedFatherDays(RULES.SHARED_DEFAULT_FATHER);
+                        if (specialCaseMother108) {
+                          // Caso especial: mãe usa os 108 dias e os 30 extra são todos para o pai
+                          setSharedMotherDays(0);
+                          setSharedFatherDays(RULES.SHARED_TOTAL);
+                        } else {
+                          setSharedMotherDays(RULES.SHARED_DEFAULT_MOTHER);
+                          setSharedFatherDays(RULES.SHARED_DEFAULT_FATHER);
+                        }
                       }
                     }}
                     className="mt-1.5 h-5 w-5 shrink-0 rounded text-green-600"
@@ -301,8 +329,14 @@ export default function Home() {
                     <input
                       type="text"
                       inputMode="numeric"
+                      disabled={specialCaseMother108}
                       value={sharedMotherDays}
                       onChange={(e) => {
+                        if (specialCaseMother108) {
+                          setSharedMotherDays(0);
+                          setSharedFatherDays(RULES.SHARED_TOTAL);
+                          return;
+                        }
                         const v = Math.min(30, Math.max(0, parseInt(e.target.value) || 0));
                         setSharedMotherDays(v);
                         setSharedFatherDays(RULES.SHARED_TOTAL - v);
@@ -316,8 +350,14 @@ export default function Home() {
                     <input
                       type="text"
                       inputMode="numeric"
+                      disabled={specialCaseMother108}
                       value={sharedFatherDays}
                       onChange={(e) => {
+                        if (specialCaseMother108) {
+                          setSharedMotherDays(0);
+                          setSharedFatherDays(RULES.SHARED_TOTAL);
+                          return;
+                        }
                         const v = Math.min(30, Math.max(0, parseInt(e.target.value) || 0));
                         setSharedFatherDays(v);
                         setSharedMotherDays(RULES.SHARED_TOTAL - v);

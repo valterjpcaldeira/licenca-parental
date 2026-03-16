@@ -26,6 +26,7 @@ export type ScheduleConfig = {
   birthDate: Date;
   initialDays: InitialDaysOption; // 120 or 150
   withExtra: boolean; // 30 days partilhada
+  hasTwins?: boolean; // nascimento múltiplo (gémeos) - 30 dias extra
   motherExclusiveDays: number;
   fatherExclusiveDays: number;
   sharedMotherDays: number; // 0-30 if withExtra
@@ -54,14 +55,23 @@ export const RULES = {
   SHARED_TOTAL: 30,
   SHARED_DEFAULT_MOTHER: 15,
   SHARED_DEFAULT_FATHER: 15,
+  // Gémeos: +30 dias por cada bebé além do primeiro.
+  // Aqui modelamos apenas gémeos (1 bebé extra) => +30 dias.
+  TWINS_EXTRA_PER_ADDITIONAL_CHILD: 30,
 } as const;
 
 export function getExclusivePool(initialDays: InitialDaysOption): number {
   return initialDays === 120 ? RULES.POOL_120 : RULES.POOL_150;
 }
 
-export function getTotalDays(initialDays: InitialDaysOption, withExtra: boolean): number {
-  return initialDays + (withExtra ? RULES.EXTRA_DAYS : 0); // 120, 150, 150 (120+30), 180 (150+30)
+export function getTotalDays(
+  initialDays: InitialDaysOption,
+  withExtra: boolean,
+  hasTwins?: boolean
+): number {
+  const base = initialDays + (withExtra ? RULES.EXTRA_DAYS : 0); // 120, 150, 150 (120+30), 180 (150+30)
+  const twinsExtra = hasTwins ? RULES.TWINS_EXTRA_PER_ADDITIONAL_CHILD : 0;
+  return base + twinsExtra;
 }
 
 function addDays(date: Date, days: number): Date {
@@ -81,6 +91,7 @@ export function formatDate(date: Date): string {
 export function calculateSchedule(config: ScheduleConfig): LeavePeriod[] {
   const periods: LeavePeriod[] = [];
   let currentDate = new Date(config.birthDate);
+  const hasTwins = !!config.hasTwins;
 
   // 1. Mother mandatory (42 days)
   const motherMandatoryEnd = addDays(currentDate, RULES.MOTHER_MANDATORY);
@@ -203,6 +214,39 @@ export function calculateSchedule(config: ScheduleConfig): LeavePeriod[] {
       endDate: new Date(fatherSharedEnd),
       color: '#60a5fa',
     });
+    currentDate = fatherSharedEnd;
+  }
+
+  // 4. Gémeos: dias adicionais (modelados como partilhados, metade para cada)
+  if (hasTwins) {
+    const totalTwinsExtra = RULES.TWINS_EXTRA_PER_ADDITIONAL_CHILD;
+    const twinsMother = Math.floor(totalTwinsExtra / 2);
+    const twinsFather = totalTwinsExtra - twinsMother;
+
+    if (twinsMother > 0) {
+      const motherTwinsEnd = addDays(currentDate, twinsMother);
+      periods.push({
+        type: 'mother_shared',
+        label: `Dias adicionais por gémeos (mãe, ${twinsMother} dias)`,
+        days: twinsMother,
+        startDate: new Date(currentDate),
+        endDate: new Date(motherTwinsEnd),
+        color: '#f9a8d4',
+      });
+      currentDate = motherTwinsEnd;
+    }
+
+    if (twinsFather > 0) {
+      const fatherTwinsEnd = addDays(currentDate, twinsFather);
+      periods.push({
+        type: 'father_shared',
+        label: `Dias adicionais por gémeos (pai, ${twinsFather} dias)`,
+        days: twinsFather,
+        startDate: new Date(currentDate),
+        endDate: new Date(fatherTwinsEnd),
+        color: '#60a5fa',
+      });
+    }
   }
 
   return periods;
